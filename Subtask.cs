@@ -12,7 +12,7 @@ namespace Todolist
         protected int NumberTask
         {
             get => numbertask;
-            set => numbertask = value;
+            set { if (value > 0) numbertask = value; else Console.WriteLine("number is small"); }
         }
         public SubTask() : base() { }
         public SubTask(int number, string Subtask) : base(Subtask) => numbertask = number;
