@@ -25,11 +25,11 @@ namespace Todolist
         }
         protected string Task
         {
-            get { return task; }
+            get => task;
         }
         protected DateTime Date
         {
-            get { return date; }
+            get => date;
         }
 
         public Tasks()
@@ -45,7 +45,5 @@ namespace Todolist
             date = DateTime.Now;
         }
         virtual public void Print() => Console.WriteLine($"Create:{date}   {task}\tStatus:{Finish}");
-
-
     }
 }

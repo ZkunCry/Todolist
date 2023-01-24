@@ -18,35 +18,40 @@ namespace Todolist
 
     }
 
-    
+
     class Todolist : Tasks, ITodoList
     {
 
         private List<Tasks> todolists;
         private List<SubTask> sublist;
         private string name;
+        private int count;
+        private int countsub;
+        private const byte DELETESUB = 2;
+        private const byte DELETETASK = 1;
+        public int Countsub { get => countsub; }
+        public int Count { get => count; }
         public string Name { get; }
-        public List<Tasks> List
-        {
-            get => todolists;
-        }
+        public List<Tasks> List{ get => todolists;}
 
         public Todolist() : base()
         {
             todolists = null;
             sublist = null;
             name = null;
+            count = 0;
         }
-        public Todolist(string name, Tasks newtask)
+        public Todolist(string name, in Tasks newtask)
         {
             this.name = name;
             todolists = new List<Tasks>
                 {
                     newtask
                 };
+            count = todolists.Count;
 
         }
-        public void CreateTask(in Tasks task) => todolists?.Add(task);
+        public void CreateTask(in Tasks task)  {todolists?.Add(task); count = todolists.Count; }
 
         public override void Print()
         {
@@ -95,16 +100,9 @@ namespace Todolist
         }
         public void DeleteTask(int pos)
         {
-
-            try
-            {
-                pos--;
-                todolists?.RemoveAt(pos);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            pos--;
+            if (_checkposition(pos,DELETETASK))
+                 todolists?.RemoveAt(pos);
         }
         public void CreateSubtask(int number, string text)
         {
@@ -112,12 +110,13 @@ namespace Todolist
                 Console.WriteLine("Out of range");
             else
             {
-                sublist = new List<SubTask> { new SubTask(number, text) };
+                sublist = new List<SubTask> { new (number, text) };
+                countsub = sublist.Count;
             }
         }
         public void SetAccept(int number)
         {
-            if (number > todolists.Count || number < 0)
+            if (todolists == null || number > todolists?.Count || number < 0)
                 Console.WriteLine("Out of range");
             else
             {
@@ -125,7 +124,22 @@ namespace Todolist
                 todolists[number].finish = true;
             }
         }
-     
+        private bool _checkposition(int pos,byte identify) 
+        {
+            if (pos > 0 && pos <= Count && identify == DELETETASK)
+                return true;
+            else if (pos > 0 && pos <= Count && identify == DELETESUB)
+                return true;
+            else return false;
+        }
+        public void DeleteSubtask(int number)
+        {
+            number--;
+            if(_checkposition(number,DELETESUB))
+                sublist?.RemoveAt(number);      
+            else
+                Console.WriteLine("Incorrect position");
+        }
         public static void Init ()
         {
             ConsoleKeyInfo key;
@@ -143,7 +157,7 @@ namespace Todolist
                 Console.Clear();
                 switch (key.Key)
                 {
-                    case ConsoleKey.D1: //Init list
+                    case ConsoleKey.D1: 
                         if (list == null)
                         {
                             Console.Clear();
@@ -153,11 +167,13 @@ namespace Todolist
                         else
                             Console.WriteLine("List already created");
                         break;
-                    case ConsoleKey.D2: //Add task in list
+
+                    case ConsoleKey.D2: 
                         Console.Clear();
                         Console.WriteLine("Enter your task:");
                         list?.CreateTask(new Tasks(Console.ReadLine()));
                         break;
+
                     case ConsoleKey.D3:
                         if (list == null)
                         {
@@ -177,16 +193,26 @@ namespace Todolist
                         if (number <=list.List.Count && number >0)
                             list.DeleteTask(number);
                         break;
+
                     case ConsoleKey.D4:
+                        Console.Clear();
+                        Console.WriteLine("Enter number task:");
+                        byte _numbertask = byte.Parse(Console.ReadLine());
+                        Console.WriteLine("Enter your subtask:");
+                        list?.CreateSubtask(_numbertask,Console.ReadLine());
+                        break;
+
+                    case ConsoleKey.D5:
+                        Console.WriteLine("Enter number task:");
+                        list?.SetAccept(byte.Parse(Console.ReadLine()));
+                        break;
 
                     case ConsoleKey.D6:
                         Console.Clear();
                         list?.Print();
                         break;
-
                 }
             } while ( key.Key !=ConsoleKey.Escape);
-
         }
     }
     
