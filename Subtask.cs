@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace Todolist
 {
-    class SubTask : Tasks
+   public class SubTask : Tasks
     {
-        private int numbertask;
-        protected int NumberTask
-        {
-            get => numbertask;
-            set { if (value > 0) numbertask = value; else Console.WriteLine("number is small"); }
-        }
+        private static int countsub;
+     
         public SubTask() : base() { }
-        public SubTask(int number, string Subtask) : base(Subtask) => numbertask = number;
-        public override void Print() => Console.WriteLine($"{numbertask}.Create: {Date}  {Task} Status:{finish}");
+        public SubTask(string Subtask) : base(Subtask) 
+        {
+            countsub++;
+        }
+        public override void Print() { Console.Write("\t"); base.Print(); }
+        
 
     }
 }
