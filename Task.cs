@@ -6,51 +6,23 @@ using System.Threading.Tasks;
 
 namespace Todolist
 {
-    public class Tasks
+     class Tasks:BaseTask, Itask
     {
-        private DateTime date;
-        private bool finish;
-        private string task;
+      
         private List<SubTask> subtasklist = new List<SubTask>();
         public List<SubTask> Subtasklist { get=>subtasklist; set =>subtasklist =value; }
+        public Tasks():base(){}
+        public Tasks(string task):base(task){}
+        public void Print() => Console.WriteLine($"Create:{Date}   {Task}");
+        public void Add(List<Itask> itasks, int pos = 0) => itasks.Add(this);
+        public void AddSubTask(in string SubTaskString) =>subtasklist.Add(new SubTask(SubTaskString));
 
-        public static int _countTask;
-        
-        public bool Finish
+        public void Delete(List<Itask> itasks, int TaskIndex, int SubIndex = 0)
         {
-            get => finish;
-            set
-            {
-                if (this.GetType() == typeof(Todolist))
-                    Console.WriteLine("Error");
-                else
-                    finish = value;
-            }
+            if (TaskIndex > itasks.Count)
+                Console.WriteLine("No such object exists");
+            else
+                itasks.RemoveAt(TaskIndex);
         }
-        public string Task
-        {
-            get => task;
-            set => task = value;
-        }
-        protected DateTime Date
-        {
-            get => date;
-        }
-
-        public Tasks()
-        {
-            finish = false;
-            task = null;
-        }
-
-        public Tasks(string task)
-        {
-            this.task = task;
-            Finish = false;
-            date = DateTime.Now;
-           
-        }
-        virtual public void Print() => Console.WriteLine($"Create:{date}   {task}");
-        public void AddSubTask(in string SubTaskString) =>subtasklist.Add(new SubTask(SubTaskString)); 
     }
 }
